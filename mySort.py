@@ -1,84 +1,67 @@
 class myEval():
-	
-	def postfix():
-		ops = {'+':1, '-':1, '/':2, '*':2,"(":0,")":0}
-		INPUT = "1+3*2"
-		stack = []
-		OUTPUT = ""
-		a = ""
-		brackets = 0
-		x = 0
-		digits = "0123456789"
-		
-		for i in INPUT:
-			if i in digits:
-				print (i, "число - добавляем в строку")
-				OUTPUT += i
-			
-			elif i in ops:
-				#if i in "()":
-					#if i == "(":
-						#stack.append(i)
-						#continue
-					#else:
-						#while stack[-1]!= "(":
-							#OUTPUT += stack.pop()
+    def __init__(self):
+        self._ops = {'+':1, '-':1, '/':2, '*':2}
+        self._digits = "0123456789"
+    
+    def tokens(self, s:str) -> list:
+        # Здесь разобрать строку на токены
+        return list(s)
 
-				if len(stack) < 1:
-					print("добавляем в стэк", i)
-					stack.append(i)
-					
-			
+    def postfix(self, s:str) -> list:
+        stack = []
+        out = []
+        
+        for i in s: 
+            print(f"Токен={i}, Стек={stack}")
+            if i in self._digits:
+                print (i, "число - добавляем в строку")
+                out += i
+                continue
+            if i in self._ops.keys():
+                try:
+                    while self._ops[i] <= self._ops[stack[-1]]:  
+                        print( i , "меньше или равно", stack[-1], "добавляем в обратном порядке к строке")      
+                        out += stack.pop()
+                except IndexError:
+                    print("Стек пустой")
+                except KeyError:
+                    print("В стеке не операция")
+                stack.append(i)
+                continue
+            if i in "()":
+                if i == "(":
+                    stack.append(i)
+                    continue
+                else:
+                    while stack[-1] != "(":
+                        out += stack.pop()
+                    stack.pop()
+                continue
 
-				
-				elif ops[i] <= ops[stack[-1]]:  
-					print( i , "меньше или равно", stack[-1], "добавляем в обратном порядке к строке")      
-					for j in range(len(stack)):
-						OUTPUT += stack.pop()		
-					stack.append(i)					
-				elif ops[i] > ops[stack[-1]]:			#
-					#result = eval(OUTPUT[-2] + stack.pop() + OUTPUT[-1])
-					#OUTPUT = OUTPUT[0:-2]
-					#OUTPUT += str(result)
-					stack.append(i)
-					print("добавляем в стэк", i )
+        for i in range(len(stack)):
+            out += stack.pop()
+            #print(out,stack,brackets)
+        return out
+    
+    def Evaluate(input):
+        digits = "0123456789"
+        stack = []
+        for i in input:
+            if i in digits:
+                stack.append(i)
+            else:
+                b = (stack[-2] + i + stack[-1])
+                #print(b,"boba")
+                #print(type(b))
+                m = str(eval(b))
+                stack.pop()
+                stack.pop()
+                stack.append(m)
+        print(stack) 
 
-		for i in range(len(stack)):
-			OUTPUT += stack.pop()
-	
-			
-					
-
-
-					
-
-		#print(OUTPUT,stack,brackets)
-		return OUTPUT
-	
-
-
-	def Evaluate(input):
-		digits = "0123456789"
-		stack = []
-		for i in input:
-			if i in digits:
-				stack.append(i)
-			else:
-				b = (stack[-2] + i + stack[-1])
-				#print(b,"boba")
-				#print(type(b))
-				m = str(eval(b))
-				stack.pop()
-				stack.pop()
-				stack.append(m)
-		print(stack) 
-
-		
-
-
-j = myEval
-data = j.postfix()
+j = myEval()
+data = j.postfix(j.tokens(input("Ну чо? ")))
 print(data)
 #j.Evaluate(data)
     
-	
+    
