@@ -2,26 +2,82 @@ class myEval():
     def __init__(self):
         self._ops = {'+':1, '-':1, '/':2, '*':2}
         self._digits = "0123456789"
-    
+        self._brackets = "()"
     def tokens(self, s:str) -> list:
         # Здесь разобрать строку на токены
-        return list(s)
+        ls = []
+        token = ""
+        state = "digits"
+        for i in s:
 
-    def postfix(self, s:str) -> list:
+            match state:
+                case "digits":
+                    if i in self._digits:
+                        token += i
+                        # token.append(i)
+                        print(token)
+                    if i in self._ops:
+                        ls.append(token)
+                        token = ""
+                        state = "ops"
+                        token += i
+                    if i in self._brackets:
+                        ls.append(token)
+                        token = ""
+                        state = "brackets"
+                        token +=i
+                        
+                        # match i:
+                        #     case "(":
+                        #         ls.
+                        #     case ")":
+                        #         ls.append(i)
+                        
+                        
+        
+                case "ops":
+                    if i in self._digits:
+                        ls.append(token)
+                        token = ""
+                        state = "digits"
+                        token += i
+                    if i in self._ops:
+                        continue
+                    if i in self._brackets:
+                        ls.append(i)
+
+                case "brackets":
+                    if i in self._digits:
+                        ls.append(token)
+                        token = ""
+                        state = "digits"
+                        token += i
+                    if i in self._ops:
+                        continue
+                    if i in self._brackets:
+                        continue
+
+        ls.append(token)
+        token = ""
+
+        return ls
+               
+    def postfix(self, s):
         stack = []
         out = []
-        
+        print(s,"s ravno")
         for i in s: 
             print(f"Токен={i}, Стек={stack}")
-            if i in self._digits:
+            if i.isdigit():
                 print (i, "число - добавляем в строку")
-                out += i
+                out.append(i)
+                print("строка =", out)
                 continue
             if i in self._ops.keys():
                 try:
                     while self._ops[i] <= self._ops[stack[-1]]:  
                         print( i , "меньше или равно", stack[-1], "добавляем в обратном порядке к строке")      
-                        out += stack.pop()
+                        out.append(stack.pop())
                 except IndexError:
                     print("Стек пустой")
                 except KeyError:
@@ -60,8 +116,9 @@ class myEval():
         print(stack) 
 
 j = myEval()
-data = j.postfix(j.tokens(input("Ну чо? ")))
-print(data)
+print(j.tokens("(12+43)*52"))
+# data = j.postfix(j.tokens("12+43*52"))
+# print(data)
 #j.Evaluate(data)
     
     
