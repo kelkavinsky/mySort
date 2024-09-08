@@ -16,6 +16,9 @@ class MyEval():
                     if i in self._digits:
                         token += i
                     if i in self._ops:
+                        if len(token) == 0 and i == "-":
+                            token +=i
+                            continue
                         if len(token) > 0:
                             ls.append(token)
                         token = ""
@@ -36,7 +39,10 @@ class MyEval():
                     if i in self._ops:
                         continue
                     if i in self._brackets:
-                        ls.append(i)
+                        ls.append(token)
+                        token = ""
+                        state = "brackets"
+                        token += i
 
                 case "brackets":
                     if i in self._digits:
@@ -45,6 +51,12 @@ class MyEval():
                         state = "digits"
                         token += i
                     if i in self._ops:
+                        if token == "(" and i == "-":
+                            ls.append(token)
+                            token = ""
+                            state = "digits"
+                            token += i
+                            continue
                         if len(token) > 0:
                             ls.append(token)
                         token = ""
@@ -64,17 +76,17 @@ class MyEval():
                
     def post_fix(self, s):
         """aboba"""
+        
         stack = []
         out = []
-        print(s,"s ravno")
         for i in s: 
             print(f"Токен={i}, Стек={stack}")
-            if i.isdigit():
+            if i.lstrip("-").isdigit():
                 print (i, "число - добавляем в строку")
                 out.append(i)
                 print("строка =", out)
                 continue
-            if i in self._ops.keys():
+            if i in self._ops:
                 try:
                     while self._ops[i] <= self._ops[stack[-1]]:  
                         print( i , "меньше или равно", stack[-1], "добавляем в обратном порядке к строке")      
@@ -85,42 +97,43 @@ class MyEval():
                     print("В стеке не операция")
                 stack.append(i)
                 continue
-            if i in "()":
-                if i == "(":
-                    stack.append(i)
-                    continue
-                else:
-                    while stack[-1] != "(":
-                        out += stack.pop()
-                    stack.pop()
+            if i == "(":
+                stack.append(i)
+                continue
+            if i == ")":
+                while stack[-1] != "(":
+                    out += stack.pop()
+                stack.pop()
                 continue
 
         for i in range(len(stack)):
             out += stack.pop()
             #print(out,stack,brackets)
+        print(stack)
+
         return out
     
-    # def Evaluate(self,input):
-    #     """" вычисляем """
-    #     digits = "0123456789"
-    #     stack = []
-    #     for i in input:
-    #         if i in digits:
-    #             stack.append(i)
-    #         else:
-    #             b = (stack[-2] + i + stack[-1])
-    #             #print(b,"boba")
-    #             #print(type(b))
-    #             m = str(eval(b))
-    #             stack.pop()
-    #             stack.pop()
-    #             stack.append(m)
-    #     print(stack) 
+    def Evaluate(self,value: list):
+        """" вычисляем """
+        stack = []
+        for i in value:
+            # print(i)
+            if i.lstrip("-").isdigit():
+                stack.append(i)
+            if i in self._ops:
+                print(stack)
+                result = stack.pop(len(stack)- 2) + i + stack.pop(len(stack)-1)
+                print(result)
+                stack.append(str(eval(result)))
+                
+        print(stack)
+                
+             
 
 j = MyEval()
-print(j.tokens("51+1"))
-# data = j.postfix(j.tokens("12+43*52"))
-# print(data)
-#j.Evaluate(data)
+print(j.tokens("12+5*3/4"))
+data = j.post_fix(j.tokens("12+5*3/4"))
+print(data, "result")
+j.Evaluate(data)
     
     
