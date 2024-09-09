@@ -1,4 +1,9 @@
 """" //// """
+
+class STATE(Enum):
+    digits = 0
+    ops = 1
+
 class MyEval():
     """moy eval"""
     def __init__(self):
@@ -7,9 +12,35 @@ class MyEval():
         self._brackets = "()"
     def tokens(self, s:str) -> list:
         """разбираем строку на токены"""
+        # Здесь надо определить, что есть токен.
         ls = []
         token = ""
         state = "digits"
+        def is_number(n: str) -> bool:
+            """ Истина, если строка есть число """
+             
+        def is_token(pattern: str) -> bool:
+            """ Это токен или нет """
+            t_list=['(', ')', '+', '-', '*', '/', is_number, '**', 'sqrt']
+
+        first_t=next_t=0
+        while (next_t < последний индекс s):
+            while (is_token(s[first_t:next_t])):
+                next_t++
+            next_t--
+            ls += [ s[first_t:next_t] ]
+            first_t = next_t
+        # как-то так
+
+        def len_token(st: str):
+            nonlocal token
+            nonlocal state
+            nonlocal ls
+            if len(token) > 0:
+                ls.append(token)
+            token = ""
+            state = st
+            token += i
         for i in s:
             match state:
                 case "digits":
@@ -19,11 +50,7 @@ class MyEval():
                         if len(token) == 0 and i == "-":
                             token +=i
                             continue
-                        if len(token) > 0:
-                            ls.append(token)
-                        token = ""
-                        state = "ops"
-                        token += i
+                        len_token("ops")
                     if i in self._brackets:
                         if len(token) > 0:
                             ls.append(token)
