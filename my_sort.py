@@ -74,9 +74,15 @@ class MyEval():
                     stack.append(i)
                     continue
                 if i.data == ")":
-                    while stack[-1] != "(":
-                        output += stack.pop()
-                    stack.pop()
+                    for i in stack:
+                        print(i.data,'haaaaaaaaaaaaaaaa')
+                    try:
+                        while stack[-1] != "(":
+                        # print(stack[-1].data)
+                            output.append(stack.pop())
+                        stack.pop()
+                    except IndexError:
+                        continue
                     continue
         while len(stack) >= 0:
             try:
@@ -98,7 +104,7 @@ class MyEval():
 
 if __name__== "__main__":
     j = MyEval()
-    m = j.post_fix(j.tokens('12+58'))
+    m = j.post_fix(j.tokens('(25+5)*3'))
     print(j.Evaluate(m))
 
         
