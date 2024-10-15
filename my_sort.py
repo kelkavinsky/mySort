@@ -95,10 +95,10 @@ class MyEval():
                 print(result)
                 stack.append(str(eval(result)))
         return stack
-j = MyEval()
-expression = j.tokens('1-5*3')
-print(expression)
-m = j.post_fix(expression)
-print(j.Evaluate(m))
 
-    
+if __name__== "__main__":
+    j = MyEval()
+    m = j.post_fix(j.tokens('12+58'))
+    print(j.Evaluate(m))
+
+        
