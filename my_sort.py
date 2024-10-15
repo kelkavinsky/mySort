@@ -23,9 +23,6 @@ class MyEval():
             self.data = data
             self.type = typ3
         
-            
-   
-    
     def tokens(self, s:str) -> list:
         """разбираем строку на токены"""
         # Здесь надо определить, что есть токен.
@@ -34,11 +31,10 @@ class MyEval():
         def is_number(n: str) -> bool:
             a = re.compile(r'^-?\d+\.?\d*$')
             return a.match(n)
-        
-             
+                
         def is_token(pattern: str) -> bool:
             """ Это токен или нет """
-            t_list=['+', '-', '*', '/', '**', 'sqrt']
+            t_list=['+', '-', '*', '/', '**', 'sqrt','']
             if pattern in ['(',')']:
                 self.state = TOKEN_TYPE.BRACKET
                 return True
@@ -53,28 +49,44 @@ class MyEval():
         
             return None
         start_pos = 0
-        end_pos = 1
-        while (end_pos< len(s)+1):
-            if is_token(s[start_pos:end_pos]):
-                print(s[start_pos:end_pos-1], 'token')
-                end_pos += 1
-            else:
-                print(s[start_pos:end_pos-1], "добавляем в вывод", self.state)
-                ls.append(self.Token(s[start_pos:end_pos-1], self.state))
-                print(s[end_pos-1], "след токен")
-                # ls.append(s[start_pos:end_pos-1])
-                start_pos = end_pos-1
+        end_pos = 0
+        while end_pos < len(s):
+            while is_token(s[start_pos:end_pos]):
+                # print(start_pos,end_pos)
+                end_pos +=1
+                if end_pos > len(s):
+                    break
+            end_pos -= 1
+            # ls += [s[start_pos:end_pos]], self.state
+            ls.append(self.Token(s[start_pos:end_pos], self.state))
+            start_pos = end_pos
+        
+        
+        
+        
+        
+        # while (end_pos< len(s)+1):
+        #     if is_token(s[start_pos:end_pos]):
+        #         print(s[start_pos:end_pos-1], 'token')
+        #         end_pos += 1
+        #     else:
+        #         print(s[start_pos:end_pos-1], "добавляем в вывод", self.state)
+        #         ls.append(self.Token(s[start_pos:end_pos-1], self.state))
+        #         print(s[end_pos-1], "след токен")
+        #         # ls.append(s[start_pos:end_pos-1])
+        #         start_pos = end_pos-1
 
-        if is_token(s[start_pos:end_pos]):
-            print(s[start_pos:end_pos-1], "добавляем в вывод", self.state)
-            ls.append(self.Token(s[start_pos:end_pos-1], self.state))
+        # if is_token(s[start_pos:end_pos]):
+        #     print(s[start_pos:end_pos-1], "добавляем в вывод", self.state)
+        #     ls.append(self.Token(s[start_pos:end_pos-1], self.state))
             
         print(ls)
-        k = 0
-        while k != len(ls):
-            print(ls[k].data, ls[k].type)
-            k += 1  
-        
+        # k = 0
+        # while k != len(ls):
+        #     print(ls[k].data, ls[k].type)
+        #     k += 1  
+        for i in ls:
+            print(i.data, i.type)
         return ls
     
     def post_fix(self, s):
@@ -110,7 +122,12 @@ class MyEval():
                         output += stack.pop()
                     stack.pop()
                     continue
-     
+        while len(stack) >= 0:
+            try:
+                output += stack.pop()
+            except IndexError:
+                break
+                # print('spisok pust')
         return output
         
         
@@ -172,7 +189,8 @@ class MyEval():
              
 
 j = MyEval()
-expression = j.tokens('(1+5.1)*3-')
+expression = j.tokens('1-5')
+print(expression)
 m = j.post_fix(expression)
 print(m)
     
